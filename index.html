@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>National Park Navigator</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        background-color: antiquewhite;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .side-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 400px;
+        height: 100%;
+        background-color: darkslategray;
+        padding: 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: auto;
+      }
+
+      .parks-container {
+        width: 100%;
+        padding: 10px;
+      }
+
+      .main-content {
+        margin-left: 400px;
+        width: calc(100% - 400px);
+        height: 100%;
+        overflow-y: auto;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .park-info {
+        background-color: darkslategrey;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-family: "Papyrus", fantasy;
+        color: bisque;
+        text-align: center;
+        margin: 0 0 20px 0;
+      }
+
+      .image-container {
+        margin-bottom: 20px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .park-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 5px;
+      }
+
+      .image-caption {
+        color: bisque;
+        font-style: italic;
+        text-align: center;
+        width: 100%;
+        margin-top: 0;
+        margin-bottom: 20;
+      }
+
+      .park-button {
+        width: 100%;
+        background-color: bisque;
+        border: black;
+        color: black;
+        font-family: "Lucida Sans", Geneva, Verdana, sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 12px;
+        margin-bottom: 10px;
+        text-align: center;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .issues-button {
+        width: 100%;
+        background-color: #deb887;
+        color: black;
+        font-family: "Lucida Sans", Geneva, Verdana, sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 12px;
+        margin-top: 20px;
+        text-align: center;
+        border-radius: 4px;
+        cursor: pointer;
+        border: none;
+      }
+
+      .park-name-display {
+        font-family: "Lucida Sans", Geneva, Verdana, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        color: bisque;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .dropdown-container {
+        background-color: bisque;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      .dropdown-header {
+        background-color: #deb887;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .dropdown-content {
+        display: none;
+        padding: 0 15px;
+      }
+
+      .fee-item {
+        padding: 15px;
+        border-bottom: 1px solid #deb887;
+      }
+
+      .fee-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .pass-name {
+        font-size: 18px;
+        font-weight: bold;
+        padding: 10px;
+        margin-bottom: 10px;
+        margin-top: 15px;
+      }
+
+      .fee-description {
+        margin-bottom: 10px;
+      }
+
+      .fee-title-cost {
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #2f4f4f;
+      }
+
+      .fee-title-cost:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+
+      .alert-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .alert-section {
+        margin-bottom: 10px;
+        padding: 10px;
+      }
+
+      .alert-item {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-bottom: 2px solid #2f4f4f;
+      }
+
+      .alert-description {
+        margin-bottom: 10px;
+        padding: 10px;
+      }
+
+      .section-title {
+        font-weight: bold;
+        margin: 15px 0;
+        padding-left: 15px;
+      }
+
+      .campground-item {
+        padding: 15px;
+        border-bottom: 2px solid #2f4f4f;
+      }
+
+      .campground-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .campground-description {
+        margin-bottom: 10px;
+      }
+
+      .activities-item {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .activities-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .activities-description {
+        margin-bottom: 10px;
+      }
+
+      .amenities-item {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .amenities-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .amenities-description {
+        margin-bottom: 10px;
+      }
+
+      .arrow {
+        border: solid black;
+        border-width: 0 3px 3px 0;
+        display: inline-block;
+        padding: 3px;
+        transform: rotate(45deg);
+      }
+
+      .park-button.active {
+    background-color: #cd9b5c;
+    color: white;
+    }
+
+      .arrow.up {
+        transform: rotate(-135deg);
+      }
+
+      .issues-content {
+        display: none;
+      }
+
+      .issues-container {
+        background-color: darkslategrey;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        color: black;
+      }
+
+      .issue-card {
+        background-color: rgba(255, 228, 196, 0.1);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 4px solid black;
+      }
+
+      .issue-title {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: black;
+      }
+
+      .photo-description {
+        line-height: 1.6;
+        margin-bottom: 15px;
+        text-align: center;
+        color: gray;
+        font-size: 7px;
+      }
+
+      .issue-title{
+        line-height: 1.6;
+        color: black;
+        font-size: 20px;
+        text-align: center;
+        text-decoration: underline;
+      }
+
+      .issue-description {
+        line-height: 1.6;
+        margin-bottom: 15px;
+        color: black;
+      }
+
+      .reservation-link {
+    display: inline-block;
+    background-color: #deb887;
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.reservation-link:hover {
+    background-color: #cd9b5c;
+}
+
+      .back-button {
+        background-color: #deb887;
+        color: black;
+        font-family: "Lucida Sans", Geneva, Verdana, sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 12px 20px;
+        margin-bottom: 20px;
+        text-align: center;
+        border-radius: 4px;
+        cursor: pointer;
+        border: none;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="side-panel">
+      <h1>National Park Navigator</h1>
+      <div class="parks-container">
+        {% for park in parks %}
+        <button class="park-button" data-park-code="{{ park.code }}">
+          {{ park.name }}
+        </button>
+        {% endfor %}
+      </div>
+      <button id="issues-button" class="issues-button">
+        National Park Issues
+      </button>
+    </div>
+
+    <div class="main-content">
+      <div id="park-info" class="park-info">
+        <div class="park-name-display">Select a National Park</div>
+        <div id="image-container"></div>
+        <div id="fees-container"></div>
+        <div id="alerts-container"></div>
+        <div id="campgrounds-container"></div>
+        <div id="activities-container"></div>
+        <div id="amenities-container"></div>
+      </div>
+
+      <div id="issues-content" class="issues-content">
+        <button id="back-button" class="back-button">← Back to Parks</button>
+        <div class="issues-container">
+          <div class="park-name-display">
+            Critical Issues Facing National Parks
+          </div>
+
+          <div class="dropdown-container">
+            <div class="dropdown-header">
+              <span>Overcrowding and Visitor Impact</span>
+              <span class="arrow"></span>
+            </div>
+            <div class="dropdown-content">
+              <img
+                src="/static/images/overcrowding.png"
+                alt="Overcrowding"
+                class="park-image"
+                style="
+                  max-width: 50%;
+                  height: auto;
+                  margin: 0 auto 10px;
+                  display: block;
+                  margin-top: 10px;
+                "
+              />
+
+              <div class="photo-description">
+                (John Burcham|The New York Times) Cars line up at the South Rim entrance of Grand Canyon National Park in Arizona on July 2, 2021.
+              </div>
+
+              <div class="issue-title">
+                Visitation Growth
+              </div>
+
+              <div class="issue-description">
+                According to the National Park Service, national park visitation grew from 285,891,275 in the year 2000 to 325,498,646 in 2023, an increase of roughly 14% (National Park Service, 2024). 
+              </div>
+
+              <img
+                src="/static/images/visitation_graph.png"
+                alt="Visitation"
+                class="park-image"
+                style="
+                  max-width: 50%;
+                  height:auto;
+                  margin: 0 auto 10px;
+                  display: block;
+                  "
+              />
+
+              <div class="photo-description">
+                (National Park Service) Yearly visitation numbers for all parks over the past four years.
+              </div>
+
+              <div class="issue-description">
+                Increased numbers of vehicles, use of public facilities, litter, wear and tear on hiking trails, and an overall increase in congestion within parks are all direct impacts caused by this uptick in visitation.
+              </div>
+
+              <div class="issue-title">
+                Combating the Issue
+              </div>
+
+              <div class="issue-description">
+                In order to combat the negative impacts caused by the growing number of people visiting these parks, many strategies have been put into place.
+              </div>
+
+              <img
+                src="/static/images/zion-shuttle.png"
+                alt="Shuttle"
+                class="park-image"
+                style="
+                  max-width: 50%;
+                  height:auto;
+                  margin: 0 auto 10px;
+                  display: block;
+                  "
+              />
+
+              <div class="photo-description">
+                (NPS/Abi Farish) The electric shuttles of Zion national park help the NPS work towards sustainability goals and reduce overcrowding within the park.
+              </div>
+
+              <div class="issue-description">
+                Different means of transportation, such as electric shuttles are being used in parks such as Zion National Park in Utah, backcountry passes are required for those desiring to camp and hike in the backcountry of most national parks, timed entry systems are being utilized at several parks, such as Arches National Park and Muir Woods National Monument, and vehicle reservations are all being utilized to great effect in an attempt to combat overcrowding (Bradybaugh, 2022).
+              </div>
+              
+
+              <img
+                src="/static/images/arches-timed-entry.png"
+                alt="Arches Timed Entry"
+                class="park-image"
+                style="
+                  max-width: 50%;
+                  height:auto;
+                  margin: 0 auto 10px;
+                  display: block;
+                  "
+              />
+
+              <div class="photo-description">
+                (National Park Service) The timed entry system at Arches National Park helps to combat overcrowding.
+              </div>
+
+              <div class="issue-description">
+                While these measures have helped manage the increasing number of visitors, they also highlight the need for continued efforts in sustainable park management. As visitation numbers continue to rise, finding a balance between public enjoyment and environmental protection will be crucial for preserving the future of these landscapes. 
+              </div>
+            </div>
+          </div>
+
+          <div class="dropdown-container">
+            <div class="dropdown-header">
+              <span>Climate Change</span>
+              <span class="arrow"></span>
+            </div>
+            <div class="dropdown-content">
+
+              <div class="issue-title">
+                Global Warming
+              </div>
+
+              <img
+                src="/static/images/glacier-melting.png"
+                alt="Melting Glacier"
+                class="park-image"
+                style="
+                  max-width: 50%;
+                  height:auto;
+                  margin: 0 auto 10px;
+                  display: block;
+                  margin-top: 10px;
+                  "
+              />
+
+              <div class="photo-description">
+                (National Park Service) Glacier National Park's Jackson Glacier, pictured in 1910, left, and 2020.
+              </div>
+
+              <div class="issue-description">
+                As time passes and the planet warms, climate change has an increasingly unpredictable impact on public lands in the U.S.. A premier example of this can be seen in Glacier National Park. Known for its remarkable glaciers, Glacier National Park is a remarkable example of the impact of climate change on our public lands. As temperatures steadily rise around the world, this park has not been spared from the effects. Throughout the years, the glaciers that give this magnificent park its name have been melting at an increasingly rapid rate, and the largest glaciers in the park have lost upwards of 75% of their size since the mid 1800s (National Park Service).
+              </div>
+
+              <div class="issue-title">
+                Flooding and Wildfire
+              </div>
+              
+              <img
+              src="/static/images/yellowstone-flood.png"
+              alt="Yellowstone Flooding"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (National Park Service) Yellowstone's North Entrance Road was washed out by flooding.
+            </div>
+
+            <div class="issue-description">
+              Even some of the most-visited national parks in the world can see devastation due to climate change, and Yellowstone National Park was no exception to this phenomenon. Yellowstone experienced unprecedented amounts of rainfall, which led to historically high flooding and water levels. Not only does this sort of natural disaster cause millions of dollars in damages, but it causes irreparable damage to the surrounding ecosystem as well (National Park Service, 2023). 
+            </div>
+
+            <img
+              src="/static/images/tennessee-wildfire.png"
+              alt="Smokey Mountains Wildfire"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (Knoxville Mercury) Deadly wildfire in Tennessee, 2016.
+            </div>
+
+            <div class="issue-description">
+              Wildfires in public lands bring with them destruction due to their devastating heat and uncontrollable blazes. Ecologically, fire is an integral part of many different ecosystems. In the Great Smoky Mountains National Park, certain types of pine trees depend on fires to open their sealed cones and disperse seeds over fire-cleared ground, and federally-endangered Red-cockaded Woodpeckers only nest in pine trees free of surrounding underbrush that is oftentimes cleared by fire (National Park Service, 2021). Despite the benefits that come with fire, fire suppression practices over the past 60-70 years, coupled with construction of residential areas near the park boundary have created issues within the park. When the natural occurrence of fires is suppressed, it allows an increased buildup of underbrush that increases the odds for devastating wildfires due to the increased material to burn (National Park Service, 2021). “In 2015, a wildfire killed 14 people, damaged or destroyed more than 2,500 homes, and burned 11,000 acres of Great Smoky Mountains National Park, getting within 2,000 feet of a major visitor center and forcing the evacuation of 14,000 residents” (NPCA, 2025). The Ferguson Fire of 2019 and the Tim Fire of 2013 both had incredibly harmful effects in California, and combined burned tens of thousands of acres of protected lands within Yosemite National Park (NPCA, 2025). 
+            </div>
+
+            <div class="issue-title">
+              Risk to Wildlife
+            </div>
+
+            <img
+              src="/static/images/brook-trout.png"
+              alt="Brook Trout"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (NPS/Tim Lambert) The presence of brook trout indicates clean, cold water.
+            </div>
+
+            <div class="issue-description">
+              The effects of global warming also causes great harm to wildlife within our national parks. “Some biologists estimate that 35% of animals and plants could become extinct in the wild by 2050 due to global climate change” (National Park Service, 2025). Heating waters put numerous different species of wildlife at risk in places such as Point Reyes National Seashore in California, including but not limited to sea otters, short-tailed albatross, steller sea lion, loggerhead sea turtle, and gray whales, just to name a few (National Park Service, 2025). In Shenandoah National Park, studies on brook trout showed similarly worrying results. Due to warming waters, results over a span of 27 years of data collection show that brook trout populations declined by “at least 50 percent in more than 70 percent of Shenandoah’s streams” (Wofford, Childress, 2024). In lower-elevation streams where water warms quicker, trout populations were increasingly devastated and populations disappeared completely in at least three streams (Wofford, Childress, 2024).
+            </div>
+
+            </div>
+          </div>
+
+          <div class="dropdown-container">
+            <div class="dropdown-header">
+              <span>Government Legislature</span>
+              <span class="arrow"></span>
+            </div>
+            <div class="dropdown-content">
+              <div class="issue-title">
+                History
+              </div>
+
+              <img
+              src="/static/images/teddy.png"
+              alt="Roosevelt"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (NPS) Theodore Roosevelt.
+            </div>
+
+            <div class="issue-description">
+              Theodore Roosevelt, often referred to as the “conservation president,” spearheaded the creation of national parks, monuments, and wildlife refuges to ensure their protection. Roosevelt felt that the decimation of species native to these lands was a loss that underlines the way society perceives our natural resources (National Park Service, 2017).
+            </div>
+
+            <img
+              src="/static/images/teddy-muir.png"
+              alt="Roosevelt and Muir"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (NPS) Theodore Roosevelt and John Muir at Yellowstone National Park.
+            </div>
+
+            <div class="issue-description">
+              During his presidency, Roosevelt enacted the Antiquities Act on June 8th, 1906, which grants the president the authority to provide general legal protection of cultural and natural resources of historic or scientific interest (National Park Service, 2025). Through the Antiquities Act, Roosevelt established five new national parks, four national monuments, greatly expanded the protections of areas surrounding the Grand Canyon as well as placing protections on six predominantly cultural areas and twelve natural areas. Following in the footsteps of Theodore Roosevelt, under the unusually long term of Franklin Delano Roosevelt (FDR) from 1933 to 1945, FDR established the United States Forest Service, 150 national forests, 51 federal bird reserves, 4 national game preserves, 5 national parks, and 18 national monuments through the Antiquities Act, totalling approximately 230 million acres of public land (National Park Service, 2020). Despite the importance that historical figures placed on the protection of public lands, recent policies have threatened these very protections.
+            </div>
+            
+            <div class="issue-title">
+              Shrinking Protections
+            </div>
+            
+            <img
+              src="/static/images/bears-ears.png"
+              alt="Bears Ears National Monument"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (Southern Utah Wilderness Alliance) The shrinking of Bears Ears National Monument.
+            </div>
+
+            <div class="issue-description">
+              The current president of the U.S. has the power to change the way that public lands are allocated, and are therefore able to shrink, expand, and otherwise alter these lands. This was seen during the first term of Donald Trump’s presidency, during which roughly half of the Bears Ears and Grand Staircase-Escalante National Monuments were opened to the harvesting of resources (NRDC, 2024).
+            </div>
+
+            <div class="issue-title">
+              Federal Hiring Freeze
+            </div>
+          
+            <img
+              src="/static/images/hiring-freeze.png"
+              alt="Federal Hiring Freeze"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (The White House) The federal hiring freeze of 2025.
+            </div>
+
+            <div class="issue-description">
+              On January 20th, Trump signed an executive order which states “As part of this freeze, no Federal civilian position that is vacant at noon on January 20, 2025, may be filled, and no new position may be created except as otherwise provided for in this memorandum or other applicable law” (The White House, 2025). Not only does this hiring freeze impact white-collar positions within the government, this also impacts National Park Service employees ranging from janitors to park rangers and law-enforcement staff. This means that at this time no additional staff in any of these groups can be hired, and in the event that someone leaves their position, they cannot even be replaced under the conditions of this executive order. 
+            </div>
+
+            <div class="issue-title">
+              Resource Extraction
+            </div>
+
+            <img
+              src="/static/images/resource-extraction.png"
+              alt="Resource Extraction"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (Steve Keller/Dreamstime.com) Colorado oil pump.
+            </div>
+
+            <div class="issue-description">
+              Between 1911 and 1938, more than $200 million worth of copper was extracted from the Kennecott Copper Mine, now a historic protected location within Wrangell-St. Elias National Park in Alaska (National Park Service). With this sort of economic value, it is easy to see the reason that many push for the allowance of resource extraction in these protected areas. A contemporary example of this is the ongoing efforts by the Utah state legislature to shrink the protections provided to their resident national parks, as the legislature wishes to open parts of these lands to resource extraction and uses other than those allowed by these protections (Leshy, 2023).
+            </div>
+            </div>
+          </div>
+
+          <div class="dropdown-container">
+            <div class="dropdown-header">
+              <span>Invasive Species</span>
+              <span class="arrow"></span>
+            </div>
+            <div class="dropdown-content">
+
+              <div class="issue-title">
+                Invasive Species
+              </div>
+
+              <div class="issue-description">
+                Invasive species pose a substantial threat to plants and animals, and those within our public lands are no exception. Native species are species that are found in an ecosystem naturally, not having been brought to the area or distributed by humans. Invasive species are non-native, and their introduction to a foreign ecosystem causes economic or environmental harm (National Park Service, 2024). Invasive species can cause harm to ecosystems in many ways, including direct competition for food with native species, predation on native species, and even causing decline in native populations through feeding habits. Additionally, the rapid rate at which invasive species tend to reproduce lead to a tendency of taking over areas shortly after their introduction.
+              </div>
+
+              <div class="issue-title">
+                Asian Carp
+              </div>
+
+              <img
+              src="/static/images/asian-carp.png"
+              alt="Asian Carp"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (USGS) Silver carp can jump when startled, possibly causing damage or injury to boaters.
+            </div>
+
+            <div class="issue-description">
+              Asian carp are an example of a prevalent invasive species causing destruction in the waterways of our public lands. Asian carp are a broad term for four types of invasive fish species: bighead carp (Hypophthalmichthys nobilis), black carp (Mylopharyngodon piceus), grass carp (Ctenopharyngodon idella), and silver carp (Hypophthalmichthys molitrix) (U.S. Department of Agriculture). These carp cause harm to the environment due to their predation on and competition with native fish species for food and habitat (U.S. Department of the Interior, 2016). One concern regarding the spread of Asian carp across waterways is the potential for their establishment in the Great Lakes region of the Northeastern United States. While scientists debate the impact of their introduction in these lakes, it would likely have a devastating effect based on what they have done in other waterways. Asian carp tend to become direct competitors to native species for food, as they require large quantities of food due to their large size; consume smaller, vulnerable species such as endangered species of mussel, putting them in further peril; and bring with them an overall decrease in water quality due to their foraging habits (“Asian Carp and the Great Lakes Region”). 
+            </div>
+
+            <img
+              src="/static/images/great-lakes.png"
+              alt="Great Lakes"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (Peter Hermes Furian/Adobe Stock) The Great Lakes.
+            </div>
+
+            <div class="issue-description">
+              In addition, severe economic impact is expected: “it has been widely reported that Great Lakes fisheries generate U.S. economic activity of approximately $7 billion annually” (“Asian Carp and the Great Lakes Region”). Additionally, millions of people fish the Great Lakes every year, which brings in thousands of job opportunities and billions of dollars. If Asian carp are to find their way into the Great Lakes system, there is the potential to lose billions of dollars in economic activity due to the impact of these fish (“Asian Carp and the Great Lakes Region”).
+            </div>
+
+            <div class="issue-title">
+              Plants
+            </div>
+
+            <img
+              src="/static/images/plant.png"
+              alt="Great Lakes"
+              class="park-image"
+              style="
+                max-width: 50%;
+                height:auto;
+                margin: 0 auto 10px;
+                display: block;
+                margin-top: 10px;
+                "
+            />
+
+            <div class="photo-description">
+              (NPS) Tamarisk slightly impaired by the tamarisk leaf beetle
+            </div>
+
+            <div class="issue-description">
+              The United States National Park Service approximates that 1.4 million acres of protected lands and waters are covered by invasive plant life (National Park Service, 2022). Invasive plants can disrupt ecosystems by outcompeting native species for resources and space, often leading to changes in the composition and health of plant life in the area. In Grand Canyon National Park, tamarisk (Tamarix) was introduced in the late 1920s to combat erosion and stabilize riverbanks. The unintended consequence of this introduction was its rapid spread and domination of the environment, crowding out native plants. Tamarisk can reach 15 to 50 feet tall, and a mature plant can use up to 200 gallons of water per day (Callaghan, 2025). Tamarisk seeds are very low in nutrients, meaning they also don’t provide much sustenance for birds and other animals in the park (Callaghan, 2025).
+            </div>
+            </div>
+          </div>
+
+          <div class="dropdown-container">
+            <div class="dropdown-header">
+              <span>Works Cited</span>
+              <span class="arrow"></span>
+            </div>
+            <div class="dropdown-content">
+              <div class="issue-description">The Salt Lake Tribune. "How crowded are America's national parks? See for yourself." Retrieved from https://www.sltrib.com/news/nation-world/2021/07/09/how-crowded-are-americas/</div>
+
+              <div class="issue-description">National Park Service. "Visitation Numbers." 2025. U.S. Department of the Interior. Retrieved from https://www.nps.gov/aboutus/visitation-numbers.htm</div>
+
+              <div class="issue-description">National Park Service. "Visitor Use Data." 2025. U.S. Department of the Interior. Retrieved from https://www.nps.gov/aboutus/visitation-numbers.htm</div>
+
+              <div class="issue-description">Claire Baker, National Park Service. "Case Study: Zion National Park's Electric Shuttles." 2024. U.S. Department of the Interior. Retrieved from https://www.nps.gov/articles/000/zion-electric-shuttles.htm</div>
+
+              <div class="issue-description">Bradybaugh, J. "Overcrowding in Parks". 2022. U.S. Department of the Interior. Retrieved from https://www.doi.gov/ocl/overcrowding-parks</div>
+
+              <div class="issue-description">National Park Service. "Make Your Reservation." 2024. U.S. Department of the Interior. Retrieved from https://www.nps.gov/arch/planyourvisit/timed-entry-reservation.htm</div>
+
+              <div class="issue-description">Scottie Andrew, CNN. "Some of Glacier National Park's glaciers have lost as much as 80% of their size in the last 50 years." 2020. Retrieved from https://www.cnn.com/travel/article/glacier-national-park-melting-scn-trnd/index.html</div>
+
+              <div class="issue-description">National Park Service. "Climate Change". U.S. Department of the Interior. Retrieved from https://www.nps.gov/subjects/climatechange/upload/GLACClimateChangeBrochure-508.pdf</div>
+
+              <div class="issue-description">Caitlin Tan, Wyoming Public Radio. "One-year after Yellowstone flooded, what are the lessons learned?" 2023. Retrieved from https://www.wyomingpublicmedia.org/natural-resources-energy/2023-06-13/one-year-after-yellowstone-flooded-what-are-the-lessons-learned</div>
+
+              <div class="issue-description">National Park Service. "Flood Recovery and Operations". 2023. U.S. Department of the Interior. Retrieved from https://www.nps.gov/yell/planyourvisit/flood-recovery.htm</div>
+
+              <div class="issue-description">Knoxville Mercury. "Fire on the Mountain: Inside East Tennessee's Wildfires." 2016. Retrieved from https://www.knoxmercury.com/2016/11/30/fire-mountain-inside-east-tennessees-wildfires/</div>
+
+              <div class="issue-description">National Park Service. "Wildland Fire". 2021. Retrieved from https://www.nps.gov/grsm/learn/nature/wildlandfire.htm#:~:text=In%20certain%20areas%20of%20the,burn%2C%20but%20are%20closely%20monitored.&text=Under%20the%20fire%20management%20plan,park%20if%20conditions%20are%20favorable.</div>
+
+              <div class="issue-description">National Parks Conservation Association. "Climate Impact Fire" Retrieved from https://www.npca.org/case-studies/fire</div>
+
+              <div class="issue-description">Wofford, J. and Childress, E. "Researchers See Startling Brook Trout Declines in Shenandoah Streams". 2024. National Park Service. U.S. Department of the Interior. Retrieved from https://www.nps.gov/articles/000/researchers-see-startling-brook-trout-declines-in-shenandoah-streams.htm?utm_source=article&utm_medium=website&utm_campaign=experience_more&utm_content=small</div>
+
+              <div class="issue-description">National Park Service. "Theodore Roosevelt and the National Park System." 2025. U.S. Department of the Interior. Retrieved from https://www.nps.gov/thrb/learn/historyculture/trandthenpsystem.htm</div>
+
+              <div class="issue-description">National Park Service. "Antiquities Act of 1906." 2025. U.S. Department of the Interior. Retrieved from https://www.nps.gov/subjects/archeology/antiquities-act.htm</div>
+
+              <div class="issue-description">National Park Service. "American Antiquities Act of 1906: Overview." 2025. U.S. Department of the Interior. Retrieved from https://www.nps.gov/articles/american-antiquities-act-of-1906.htm</div>
+
+              <div class="issue-description">National Park Service. "FDR's Conservation Legacy." 2020. Retrieved from https://www.nps.gov/articles/fdr-s-conservation-legacy.htm</div>
+
+              <div class="issue-description">Southern Utah Wilderness Alliance. "Trump's Repeal of Utah Monuments Leaves Millions of Acres in Limbo." n.d. Retrieved from https://suwa.org/trumps-assault-utah-monuments-leaves-millions-acres-limbo/</div>
+
+              <div class="issue-description">National Resources Defense Council. "The Wilderness Society et al. v. Trump et al. (Grand Staircase-Escalante National Monument)." 2024. Retrieved from https://www.nrdc.org/court-battles/wilderness-society-et-v-trump-et-grand-staircase-escalante</div>
+
+              <div class="issue-description">The White House. "Hiring Freeze". 2025. The United States Government. Retrieved from https://www.whitehouse.gov/presidential-actions/2025/01/hiring-freeze/</div>
+
+              <div class="issue-description">National Parks Conservation Association. "The 12 Parks Most Threatened by Oil & Gas Drilling." 2019. Retrieved from https://www.npca.org/articles/2329-the-12-parks-most-threatened-by-oil-gas-drilling</div>
+
+              <div class="issue-description">National Park Service. "Kennecott Mines National Historic Landmark". 2024. U.S. Department of the Interior. Retrieved from https://www.nps.gov/wrst/learn/historyculture/kennecott-mines-national-historic-landmark.htm</div>
+
+              <div class="issue-description">Leshy, J. "Utah wants to disable the law that led to the creation of four of its magnificent National Parks." 2023. The New York Times. Retrieved from https://www.nytimes.com/2023/03/05/opinion/national-parks-bears-ears-monuments.html</div>
+
+              <div class="issue-description">National Park Service. "What Are Invasive Species?" 2024. U.S. Department of the Interior. Retrieved from https://www.nps.gov/subjects/invasive/what-are-invasive-species.htm#:~:text=Invasive%20species%20has%20a%20specific,is%20not%20always%20the%20case.</div>
+
+              <div class="issue-description">Associated Press, 13 KRCG. "'Asian Carp' now 'invasive carp', U.S. Fish and Wildlife Service made change in April." 2021. Retrieved from https://krcgtv.com/news/local/asian-carp-now-invasive-carp-us-fish-and-wildlife-service-made-change-in-april</div>
+
+              <div class="issue-description">Congressional Research Service. "Asian Carp and the Great Lakes Region". 2016. Retrieved from https://crsreports.congress.gov/product/pdf/R/R41082/41</div>
+
+              <div class="issue-description">U.S. Department of Agriculture. "Invasive Carp." Retrieved from https://www.invasivespeciesinfo.gov/aquatic/fish-and-other-vertebrates/invasive-carp</div>
+
+              <div class="issue-description">Marine Link. "Great Lakes Water Levels Currently Below Average." 2025. Retrieved from https://www.marinelink.com/news/great-lakes-water-levels-currently-below-522819</div>
+
+              <div class="issue-description">National Park Service. "Tamarisk Leaf Beetle." 2023. U.S. Department of the Interior. Retrieved from https://www.nps.gov/glca/learn/nature/tamarisk-leaf-beetle.htm</div>
+
+              <div class="issue-description">National Park Service. "Invasive Plants". 2022. U.S. Department of the Interior. Retrieved from https://www.nps.gov/im/ermn/invasive-plants.htm</div>
+
+              <div class="issue-description">Callaghan, A. "Fighting Invasive Species". Public Lands. Retrieved from https://www.publiclands.com/blog/a/invasive-species-at-us-national-parks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <script>
+      const buttons = document.querySelectorAll(".park-button");
+      const display = document.querySelector(".park-name-display");
+      const feesContainer = document.getElementById("fees-container");
+      const alertsContainer = document.getElementById("alerts-container");
+      const campgroundsContainer = document.getElementById(
+        "campgrounds-container"
+      );
+      const activitiesContainer = document.getElementById(
+        "activities-container"
+      );
+      const amenitiesContainer = document.getElementById("amenities-container");
+      const issuesButton = document.getElementById("issues-button");
+      const parkInfo = document.getElementById("park-info");
+      const issuesContent = document.getElementById("issues-content");
+      const backButton = document.getElementById("back-button");
+
+      function createFeesDropdown(fees) {
+        const entranceFees = fees.entrance_fees;
+        const entrancePasses = fees.entrance_passes;
+
+        const dropdownHTML = `
+        <div class="dropdown-container">
+          <div class="dropdown-header">
+            <span>Fees & Passes</span>
+            <span class="arrow"></span>
+          </div>
+          <div class="dropdown-content">
+            ${
+              entrancePasses.length > 0
+                ? entrancePasses
+                    .map(
+                      (pass) => `
+                      <div class="fee-title-cost">
+                        <span class="pass-name">${pass.title}</span>
+                        <span class="pass-cost">$${parseFloat(
+                          pass.cost
+                        ).toFixed(2)}</span>
+                        <div class="pass-description">${pass.description}</div>
+                      </div>`
+                    )
+                    .join("")
+                : ""
+            }
+            ${
+              entranceFees.length > 0
+                ? entranceFees
+                    .map(
+                      (fee) => `
+                      <div class="fee-title-cost">
+                        <span class="fee-name">${fee.title}</span>
+                        <span class="fee-cost">$${parseFloat(fee.cost).toFixed(
+                          2
+                        )}</span>
+                        <div class="fee-description">${fee.description}</div>
+                      </div>`
+                    )
+                    .join("")
+                : ""
+            }
+          </div>
+        </div>
+      `;
+
+        return dropdownHTML;
+      }
+
+      function createAlertsDropdown(alerts) {
+        const dropdownHTML = `
+              <div class="dropdown-container">
+                <div class="dropdown-header">
+                  <span>Active Alerts</span>
+                  <span class="arrow"></span>
+                </div>
+                <div class="dropdown-content">
+                  ${alerts
+                    .map(
+                      (alert) => `
+                    <div class="alert-item">
+                      <div class="alert-title">${alert.title}</div>
+                      <div class="alert-description">${alert.description}</div>
+                    </div>
+                  `
+                    )
+                    .join("")}
+                  </div>
+                </div>
+            `;
+
+        return dropdownHTML;
+      }
+
+      function createCampgroundsDropdown(campgrounds) {
+    const dropdownHTML = `
+          <div class="dropdown-container">
+            <div class="dropdown-header">
+              <span>Campgrounds</span>
+              <span class="arrow"></span>
+            </div>
+            <div class="dropdown-content">
+              ${campgrounds
+                .map(
+                  (campground) => `
+                <div class="campground-item">
+                  <div class="campground-name">${campground.name}</div>
+                  <div class="campground-description">${campground.description}</div>
+                  ${campground.reservationUrl && campground.reservationUrl !== "https://www.recreation.gov/" ? 
+                    `<a href="${campground.reservationUrl}" target="_blank" class="reservation-link">Make a Reservation</a>` :
+                    `<div class="reservation-link">No Online Reservations</div>`
+                  }
+                </div>
+              `
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+
+    return dropdownHTML;
+}
+
+      function createActivitiesDropdown(activities) {
+        const dropdownHTML = `
+              <div class = "dropdown-container">
+                <div class="dropdown-header">
+                  <span>Activities</span>
+                  <span class="arrow"></span>
+                </div>
+                <div class="dropdown-content">
+                  ${activities
+                    .map(
+                      (activity) => `
+                    <div class="activities-item">
+                      <div class="activities-name">${activity.name}</div>
+                    </div>
+                    `
+                    )
+                    .join("")}
+                </div>
+              </div>
+              `;
+        return dropdownHTML;
+      }
+
+      function createAmenitiesDropdown(amenities) {
+        const dropdownHTML = `
+              <div class="dropdown-container">
+                <div class="dropdown-header">
+                  <span>Amenities</span>
+                  <span class="arrow"></span>
+                </div>
+                <div class="dropdown-content">
+                  ${amenities
+                    .map(
+                      (amenity) => `
+                    <div class="amenity-item">
+                      <div class="amenity-name">${amenity.name}</div>
+                    </div>
+                  `
+                    )
+                    .join("")}
+                </div>
+              </div>
+            `;
+
+        return dropdownHTML;
+      }
+
+      async function fetchImage(parkCode) {
+        try {
+          const response = await fetch("/get_image", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ park_code: parkCode }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch image data");
+          }
+
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          const imageContainer = document.getElementById("image-container");
+          imageContainer.innerHTML = `
+                  <img src="${data.url}" alt="${data.title}" class="park-image">
+                  <div class="image-caption">${data.caption}</div>\
+                `;
+        } catch (error) {
+          const imageContainer = document.getElementById("image-container");
+          imageContainer.innerHTML = `<div class="error-message">Unable to load park image</div>`;
+        }
+      }
+
+      async function fetchFees(parkCode) {
+        try {
+          const response = await fetch("/get_park_fees", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ park_code: parkCode }),
+          });
+          if (!response.ok) {
+            throw new Error("Failed to fetch fee data");
+          }
+          const data = await response.json();
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          if (
+            data.entrance_fees.length === 0 &&
+            data.entrance_passes.length === 0
+          ) {
+            feesContainer.innerHTML =
+              "<div>No fee information available for this park.</div>";
+          } else {
+            feesContainer.innerHTML = createFeesDropdown(data);
+
+            const dropdownHeader =
+              feesContainer.querySelector(".dropdown-header");
+            const dropdownContent =
+              feesContainer.querySelector(".dropdown-content");
+            const arrow = feesContainer.querySelector(".arrow");
+
+            dropdownHeader.addEventListener("click", () => {
+              dropdownContent.style.display =
+                dropdownContent.style.display === "none" ||
+                dropdownContent.style.display === ""
+                  ? "block"
+                  : "none";
+              arrow.classList.toggle("up");
+            });
+          }
+        } catch (error) {
+          feesContainer.innerHTML = `<div>${error.message}</div>`;
+        }
+      }
+
+      async function fetchAlerts(parkCode, parkName) {
+        display.textContent = parkName;
+        try {
+          const response = await fetch("/get_alerts", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ park_code: parkCode }),
+          });
+          if (!response.ok) {
+            throw new Error("Failed to fetch alert data");
+          }
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          if (data.alerts.length === 0) {
+            alertsContainer.innerHTML =
+              "<div>No alerts were found for this park.</div>";
+            return;
+          }
+
+          alertsContainer.innerHTML = createAlertsDropdown(data.alerts);
+
+          const dropdownHeader =
+            alertsContainer.querySelector(".dropdown-header");
+          const dropdownContent =
+            alertsContainer.querySelector(".dropdown-content");
+          const arrow = alertsContainer.querySelector(".arrow");
+
+          dropdownHeader.addEventListener("click", () => {
+            dropdownContent.style.display =
+              dropdownContent.style.display === "none" ||
+              dropdownContent.style.display === ""
+                ? "block"
+                : "none";
+            arrow.classList.toggle("up");
+          });
+        } catch (error) {
+          alertsContainer.innerHTML = `<div>${error.message}</div>`;
+        }
+      }
+
+      async function fetchCampgrounds(parkCode, parkName) {
+        display.textContent = parkName;
+        try {
+          const response = await fetch("/get_campgrounds", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ park_code: parkCode }),
+          });
+          if (!response.ok) {
+            throw new Error("Failed to fetch campground data");
+          }
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          if (data.campgrounds.length === 0) {
+            campgroundsContainer.innerHTML =
+              "<div>No campgrounds were found for this park.</div>";
+            return;
+          }
+
+          campgroundsContainer.innerHTML = createCampgroundsDropdown(
+            data.campgrounds
+          );
+
+          const dropdownHeader =
+            campgroundsContainer.querySelector(".dropdown-header");
+          const dropdownContent =
+            campgroundsContainer.querySelector(".dropdown-content");
+          const arrow = campgroundsContainer.querySelector(".arrow");
+
+          dropdownHeader.addEventListener("click", () => {
+            dropdownContent.style.display =
+              dropdownContent.style.display === "none" ||
+              dropdownContent.style.display === ""
+                ? "block"
+                : "none";
+            arrow.classList.toggle("up");
+          });
+        } catch (error) {
+          campgroundsContainer.innerHTML = `<div>${error.message}</div>`;
+        }
+      }
+
+      async function fetchActivities(parkCode) {
+        try {
+          const response = await fetch("/get_activities", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ park_code: parkCode }),
+          });
+          if (!response.ok) {
+            throw new Error("Failed to fetch activities data");
+          }
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          if (data.activities.length === 0) {
+            activitiesContainer.innerHTML =
+              "<div>No activities were found for this park.</div>";
+            return;
+          }
+
+          activitiesContainer.innerHTML = createActivitiesDropdown(
+            data.activities
+          );
+
+          const dropdownHeader =
+            activitiesContainer.querySelector(".dropdown-header");
+          const dropdownContent =
+            activitiesContainer.querySelector(".dropdown-content");
+          const arrow = activitiesContainer.querySelector(".arrow");
+
+          dropdownHeader.addEventListener("click", () => {
+            dropdownContent.style.display =
+              dropdownContent.style.display === "none" ||
+              dropdownContent.style.display === ""
+                ? "block"
+                : "none";
+            arrow.classList.toggle("up");
+          });
+        } catch (error) {
+          activitiesContainer.innerHTML = `<div>${error.message}</div>`;
+        }
+      }
+
+      async function fetchAmenities(parkCode, parkName) {
+        display.textContent = parkName;
+        try {
+          const response = await fetch("/get_amenities", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ park_code: parkCode }),
+          });
+          if (!response.ok) {
+            throw new Error("Failed to fetch amenities data");
+          }
+          const data = await response.json();
+
+          if (data.error) {
+            throw new Error(data.error);
+          }
+
+          if (data.amenities.length === 0) {
+            amenitiesContainer.innerHTML =
+              "<div>No amenities were found for this park.</div>";
+            return;
+          }
+
+          amenitiesContainer.innerHTML = createAmenitiesDropdown(
+            data.amenities
+          );
+
+          const dropdownHeader =
+            amenitiesContainer.querySelector(".dropdown-header");
+          const dropdownContent =
+            amenitiesContainer.querySelector(".dropdown-content");
+          const arrow = amenitiesContainer.querySelector(".arrow");
+
+          dropdownHeader.addEventListener("click", () => {
+            dropdownContent.style.display =
+              dropdownContent.style.display === "none" ||
+              dropdownContent.style.display === ""
+                ? "block"
+                : "none";
+            arrow.classList.toggle("up");
+          });
+        } catch (error) {
+          amenitiesContainer.innerHTML = `<div>${error.message}</div>`;
+        }
+      }
+
+      buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const parkCode = button.dataset.parkCode;
+    const parkName = button.textContent.trim();
+
+    // Remove active class from all buttons and add to clicked button
+    buttons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+
+    // Make sure we're showing the park info view
+    parkInfo.style.display = "block";
+    issuesContent.style.display = "none";
+
+    fetchImage(parkCode);
+    fetchFees(parkCode);
+    fetchAlerts(parkCode, parkName);
+    fetchCampgrounds(parkCode, parkName);
+    fetchActivities(parkCode);
+    fetchAmenities(parkCode, parkName);
+  });
+});
+
+      issuesButton.addEventListener("click", () => {
+        parkInfo.style.display = "none";
+        issuesContent.style.display = "block";
+      });
+
+      backButton.addEventListener("click", () => {
+        parkInfo.style.display = "block";
+        issuesContent.style.display = "none";
+      });
+
+      document.querySelectorAll(".dropdown-header").forEach((header) => {
+        header.addEventListener("click", () => {
+          const content = header.nextElementSibling;
+          const arrow = header.querySelector(".arrow");
+          content.style.display =
+            content.style.display === "none" || content.style.display === ""
+              ? "block"
+              : "none";
+          arrow.classList.toggle("up");
+        });
+      });
+    </script>
+  </body>
+</html>
